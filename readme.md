@@ -72,7 +72,7 @@
 
 ### Funciones
 
-- Train
+~~- Train ~~
 - GenerateWildPokemon
     - Fight
         - RunAway

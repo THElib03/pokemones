@@ -9,7 +9,7 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th>Numero en la Pokedex</th>
+				<th>N Pokedex</th>
 				<th>Nivel</th>
 				<th>Poder</th>
 				<th>Acciones</th>
@@ -23,11 +23,13 @@
 					<td>{{ pokemon.power }}</td>
 					{% if pokemon.isAlive %}
 						<td>
-                        {# TODO: Implementar las acciones #}
-							{# <a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">Entrenar</a> #}
+						{# TODO: Implementar las acciones #}
+							<a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">Entrenar</a>
 							{# <a href="{{ path('app_pokemon_fight', {'id': pokemon.id}) }}">Pelear</a> #}
 							{# <a href="{{ path('app_pokemon_hunt', {'id': pokemon.id}) }}">Cazar</a> #}
 						</td>
+					{% else %}
+						<td><span>El pokemon esta muerto</span></td>
 					{% endif %}
 				</tr>
 			{% else %}
