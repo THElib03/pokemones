@@ -1,11 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Pokemon{% endblock %}
+{% block title %}Crear nuevo Pokémon{% endblock %}
 
 {% block body %}
-    <h1>Create new Pokemon</h1>
+    <h1>Crear nuevo Pokémon</h1>
 
-    {{ include('pokemon/_form.html.twig') }}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button class="btn">Guardar</button>
+    {{ form_end(form) }}
 
-    <a href="{{ path('app_pokemon_index') }}">back to list</a>
+    <a href="{{ path('app_pokemon_index') }}">Volver a la lista</a>
 {% endblock %}
