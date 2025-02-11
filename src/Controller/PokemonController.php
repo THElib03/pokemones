@@ -41,6 +41,13 @@ final class PokemonController extends AbstractController
             'form' => $form,
         ]);
     }
+    #[Route("/colection", name: 'app_pokemon_colection', methods: ['GET'])]
+    public function colectionn(PokemonRepository $pokemonRepository): Response
+    {
+        return $this->render('pokemon/colection.html.twig', [
+            'pokemons' => $pokemonRepository->getUserPokemons($this->getUser()),
+        ]);
+    }
 
     #[Route('/{id}', name: 'app_pokemon_show', methods: ['GET'])]
     public function show(Pokemon $pokemon): Response
@@ -71,7 +78,7 @@ final class PokemonController extends AbstractController
     #[Route('/{id}', name: 'app_pokemon_delete', methods: ['POST'])]
     public function delete(Request $request, Pokemon $pokemon, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$pokemon->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $pokemon->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($pokemon);
             $entityManager->flush();
         }

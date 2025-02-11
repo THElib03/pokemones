@@ -65,7 +65,7 @@
 
 - **Principal**
 - **Cazar**
-- **Colección**
+- ~~**Colección**~~ (Falta implementar las acciones)
 - **Batalla**
 - **Historial Pokémon**
 
