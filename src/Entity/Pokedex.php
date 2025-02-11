@@ -23,7 +23,13 @@ class Pokedex
     #[ORM\Column(length: 255)]
     private ?string $image = null;
 
-    public function getId(): ?int
+    #[ORM\Column(nullable: true)]
+    private ?int $EvolutionLevel = null;
+
+    #[ORM\OneToOne(targetEntity: self::class, inversedBy: 'getPreEvolution', cascade: ['persist', 'remove'])]
+    private ?self $Evolution = null;
+
+       public function getId(): ?int
     {
         return $this->id;
     }
@@ -63,4 +69,33 @@ class Pokedex
 
         return $this;
     }
+
+    public function getEvolutionLevel(): ?int
+    {
+        return $this->EvolutionLevel;
+    }
+
+    public function setEvolutionLevel(?int $EvolutionLevel): static
+    {
+        $this->EvolutionLevel = $EvolutionLevel;
+
+        return $this;
+    }
+
+    public function getEvolution(): ?self
+    {
+        return $this->Evolution;
+    }
+
+    public function setEvolution(?self $Evolution): static
+    {
+        $this->Evolution = $Evolution;
+
+        return $this;
+    }
+
+
+
+
+
 }

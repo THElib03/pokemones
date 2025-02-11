@@ -7,6 +7,8 @@
 - **Name(String)**
 - **Type(array)**
 - **Image(String)**
+- **EvolutionLevel(Int)**
+- **Evolution(Pokedex)**
 
 ### Pokemon
 
@@ -54,6 +56,9 @@
   - **Si gana**: Sube **1 nivel**.
   - **Si pierde**: **Muere**.
 
+### Evolucionar
+    - 
+
 ---
 
 ## 📺 Vistas
@@ -63,3 +68,18 @@
 - **Colección**
 - **Batalla**
 - **Historial Pokémon**
+
+
+### Funciones
+
+- Train
+- GenerateWildPokemon
+    - Fight
+        - RunAway
+        - TryCatch
+            - Catched 
+            - Evolve
+    - Hunt
+        - HuntWin
+            - Evolve
+        - HuntLose
