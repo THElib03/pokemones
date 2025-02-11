@@ -25,19 +25,24 @@ final class PokemonController extends AbstractController
     #[Route('/new', name: 'app_pokemon_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+    
         $pokemon = new Pokemon();
+        $pokemon->setIsAlive(true); 
+        $pokemon->setLevel(1); 
+        $pokemon->setPower(10); 
+    
         $form = $this->createForm(PokemonType::class, $pokemon);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($pokemon);
             $entityManager->flush();
-
+    
             return $this->redirectToRoute('app_pokemon_index', [], Response::HTTP_SEE_OTHER);
         }
-
+    
         return $this->render('pokemon/new.html.twig', [
-            'pokemon' => $pokemon,
             'form' => $form,
         ]);
     }
