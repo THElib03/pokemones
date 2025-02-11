@@ -10,6 +10,7 @@
 		<thead>
 			<tr>
 				<th>N Pokedex</th>
+				<th>Nombre</th>    <!-- TODO: Añadir imagen del pokemon -->
 				<th>Nivel</th>
 				<th>Poder</th>
 				<th>Acciones</th>
@@ -19,6 +20,7 @@
 			{% for pokemon in pokemons %}
 				<tr>
 					<td>{{ pokemon.pokedex.id }}</td>
+					<td>{{ pokemon.pokedex.name }}</td>
 					<td>{{ pokemon.level }}</td>
 					<td>{{ pokemon.power }}</td>
 					{% if pokemon.isAlive %}

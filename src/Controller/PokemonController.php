@@ -86,6 +86,18 @@ final class PokemonController extends AbstractController
         return $this->redirectToRoute('app_pokemon_colection', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/{id}/evolve', name: 'app_pokemon_evolve', methods: ['GET', 'POST'])]
+    public function evolve(Request $request, Pokemon $pokemon, EntityManagerInterface $entityManager): Response
+    {
+        if ($pokemon->getPokedex()->getEvolution() != null && $pokemon->getLevel() >= $pokemon->getPokedex()->getEvolutionLevel()) {
+
+            $pokemon->setPokedex($pokemon->getPokedex()->getEvolution());
+            $entityManager->persist($pokemon);
+            $entityManager->flush();
+        }
+        return $this->redirectToRoute('app_pokemon_colection', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{id}', name: 'app_pokemon_delete', methods: ['POST'])]
     public function delete(Request $request, Pokemon $pokemon, EntityManagerInterface $entityManager): Response
     {
