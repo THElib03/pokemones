@@ -48,12 +48,12 @@ class Pokemon
         return $this->id;
     }
 
-    public function getPokedexId(): ?Pokedex
+    public function getPokedex(): ?Pokedex
     {
         return $this->pokedex;
     }
 
-    public function setPokedexId(?Pokedex $pokedex): static
+    public function setPokedex(?Pokedex $pokedex): static
     {
         $this->pokedex = $pokedex;
 

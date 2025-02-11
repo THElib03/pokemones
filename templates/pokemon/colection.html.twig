@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Pokemon index
+{% endblock %}
+
+{% block body %}
+	<h1>Pokemon index</h1>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>N Pokedex</th>
+				<th>Nivel</th>
+				<th>Poder</th>
+				<th>Acciones</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for pokemon in pokemons %}
+				<tr>
+					<td>{{ pokemon.pokedex.id }}</td>
+					<td>{{ pokemon.level }}</td>
+					<td>{{ pokemon.power }}</td>
+					{% if pokemon.isAlive %}
+						<td>
+						{# TODO: Implementar las acciones #}
+							<a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">Entrenar</a>
+							{# <a href="{{ path('app_pokemon_fight', {'id': pokemon.id}) }}">Pelear</a> #}
+							{# <a href="{{ path('app_pokemon_hunt', {'id': pokemon.id}) }}">Cazar</a> #}
+						</td>
+					{% else %}
+						<td><span>El pokemon esta muerto</span></td>
+					{% endif %}
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('app_pokemon_new') }}">Create new</a>
+{% endblock %}

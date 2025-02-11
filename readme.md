@@ -65,14 +65,14 @@
 
 - **Principal**
 - **Cazar**
-- **Colección**
+- ~~**Colección**~~ (Falta implementar las acciones)
 - **Batalla**
 - **Historial Pokémon**
 
 
 ### Funciones
 
-- Train
+~~- Train ~~
 - GenerateWildPokemon
     - Fight
         - RunAway
