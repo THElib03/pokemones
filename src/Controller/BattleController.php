@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Battle;
+use App\Entity\Pokemon;
 use App\Form\BattleType;
+use App\Form\HuntType;
 use App\Repository\BattleRepository;
+use App\Repository\PokedexRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,6 +44,40 @@ final class BattleController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET', 'POST'])]
+    public function hunt(PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
+        $pkdx = $pokeRepo -> generateWildPokemon();
+        $form = $this -> createForm(HuntType::class, null, ['method' => 'POST']);
+
+        if($request -> get('hunt') !== null){
+            if(isset($request -> get('hunt')['flee'])){
+                $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
+            }
+            elseif(isset($request -> get('hunt')['hunt'])){
+                if(rand(0, 9) > 5){
+                    $pkmn = new Pokemon();
+                    $pkmn -> setPokedex($pkdx);
+                    $pkmn -> setuser($this -> getUser());
+                    $pkmn -> setLevel(1);
+                    $pkmn -> setPower(10);
+                    $pkmn -> setIsAlive(true);
+
+                    $entityManager -> persist($pkmn);
+                    $entityManager -> flush();
+
+                    $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' . $pkdx -> getName() . '\npuedes revisarlo en tu coleción.');
+                }
+                else{
+                    $this -> addFlash('warning', '¡Vaya! ' . $pkdx -> getName() . ' se ha resistido a tus encantos.');
+                }
+            }
+        }
+
+        return $this -> render('battle/hunt.html.twig', [
+            'pokemon' => $pkmn, 'form' => $form
+        ]);
+    }   
 
     #[Route('/{id}', name: 'app_battle_show', methods: ['GET'])]
     public function show(Battle $battle): Response
@@ -79,3 +116,4 @@ final class BattleController extends AbstractController
         return $this->redirectToRoute('app_battle_index', [], Response::HTTP_SEE_OTHER);
     }
 }
+
