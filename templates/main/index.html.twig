@@ -27,6 +27,6 @@
 		
 		<a href="{{ path('app_pokemon_colection') }}">Tus Pokemons</a>
 	{% else %}
-		<a href="{{path('app_login')}}">Login</a>
+		<a href="{{ path('app_login') }}">Iniciar Sesión</a> | <a href="{{ path('app_register') }}">Registrar</a>
 	{% endif %}
 {% endblock %}
