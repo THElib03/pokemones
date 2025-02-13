@@ -47,9 +47,6 @@ final class PokemonController extends AbstractController
         ]);
     }
 
-    #[Route('/fight', name: 'app_pokemon_fight_wild', methods: ['GET'])]
-    // public function 
-
     #[Route('/{id}', name: 'app_pokemon_show', methods: ['GET'])]
     public function show(Pokemon $pokemon): Response
     {

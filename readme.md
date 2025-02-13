@@ -24,11 +24,12 @@
 
 ### Battle
 
-- **pokemon(Pokemon)**
-- **wild(Pokedex)**
-- **wildLevel**
-- **wildPower**
-- **result**
+- **user1(User)**
+- **pokemon1([Pokemon])**
+- **user2(User)**
+- **pokemon2([Pokemon])**
+- **state(int)**
+- **result(boolean)**
 
 ### Relaciones
 
@@ -52,10 +53,10 @@
 
 ### ⚔️ Enfrentar
 
-- Un jugador puede elegir uno de sus pokemones y hacerlo luchar contra:
-  - Un pokemon salvaje aleatorio.
-  - Un pokemon de otro jugador.
-  - Elegir varios pokemones propios y luchar contra un grupo de pokemones de otro jugador.
+- Un jugador puede elegir uno de sus pokemones y hacerlo **luchar** contra:
+  - Un pokemon **salvaje aleatorio**.
+  - Un pokemon de **otro jugador**.
+  - Elegir **varios pokemones** propios y luchar contra un **grupo** de pokemones de **otro jugador**.
 
 - La Batalla contra otro pokemon **aleatorio**, se decide comparando **fuerza** multiplicada por **nivel** de cada pokemon.
   En el caso de equipos, se puede ver el equipo enermigo y reordenar para elegir contra quien enfrentarse, se compara cada pareja de la misma manera y quien gane mas combates gana la pelea.
