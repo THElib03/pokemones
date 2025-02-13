@@ -16,6 +16,13 @@ class PokedexRepository extends ServiceEntityRepository
         parent::__construct($registry, Pokedex::class);
     }
 
+    public function generateWildPokemon(){
+        $pkmns = $this -> createQueryBuilder('p')
+            -> getQuery() -> getResult();
+
+        return $pkmns[rand(0, sizeof($pkmns) - 1)];
+    }
+
 //    /**
 //     * @return Pokedex[] Returns an array of Pokedex objects
 //     */

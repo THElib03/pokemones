@@ -52,12 +52,20 @@
 
 ### ⚔️ Enfrentar
 
-- Batalla contra un pokemon **aleatorio**, comparando **fuerza** y **nivel**.
-  - **Si gana**: Sube **1 nivel**.
-  - **Si pierde**: **Muere**.
+- Un jugador puede elegir uno de sus pokemones y hacerlo luchar contra:
+  - Un pokemon salvaje aleatorio.
+  - Un pokemon de otro jugador.
+  - Elegir varios pokemones propios y luchar contra un grupo de pokemones de otro jugador.
+
+- La Batalla contra otro pokemon **aleatorio**, se decide comparando **fuerza** multiplicada por **nivel** de cada pokemon.
+  En el caso de equipos, se puede ver el equipo enermigo y reordenar para elegir contra quien enfrentarse, se compara cada pareja de la misma manera y quien gane mas combates gana la pelea.
+  Al terminar la batalla:
+  - **Si gana**: El usuario elige entre subir su pokemon/es **1 nivel**, cazar al pokemon vencido o resucitar un pokemon propio.
+  - **Si pierde**: **Muere** y no se puede volver a usar hasta ser resucitado.
 
 ### Evolucionar
-    - 
+
+- Alcanzado cierto **nivel**, un pokemon puede evolucionar si el usuario lo decide.
 
 ---
 

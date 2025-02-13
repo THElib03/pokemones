@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body%}
+    <h1>¡Un {{pokemon.name}} salvaje ha aparecido!</h1>
+    <img src="{{pokemon.image}}" alt="">
+    <p>¿Que vas a hacer?</p>
+
+    {{ form_start(form) }}
+        {{ form_row(form.flee) }}
+        {{ form_row(form.hunt) }}
+    {{ form_end(form) }}
+{% endblock %}
