@@ -1,39 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pokedex index{% endblock %}
+{% block title %}Pokedex index
+{% endblock %}
 
 {% block body %}
-    <h1>Pokedex index</h1>
+	<h1>Pokedex index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Image</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for pokedex in pokedexes %}
-            <tr>
-                <td>{{ pokedex.id }}</td>
-                <td>{{ pokedex.name }}</td>
-                <td>{{ pokedex.type ? pokedex.type|join(', ') : '' }}</td>
-                <td>{{ pokedex.image }}</td>
-                <td>
-                    <a href="{{ path('app_pokedex_show', {'id': pokedex.id}) }}">show</a>
-                    <a href="{{ path('app_pokedex_edit', {'id': pokedex.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Type</th>
+				<th>Image</th>
+				<th>actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for pokedex in pokedexes %}
+				<tr>
+					<td>{{ pokedex.id }}</td>
+					<td>{{ pokedex.name }}</td>
+					<td>{{ pokedex.type ? pokedex.type|join(', ') : '' }}</td>
+					<td>
+						<div style="width: 100px; height: 100px; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+							<img src="{{ asset('uploads/images/' ~ pokedex.image) }}" alt="{{ pokedex.name }}" class="pokemon-image" style="width: 100%; height: 100%; object-fit: cover;"/>
+						</div>
+					</td>
 
-    <a href="{{ path('app_pokedex_new') }}">Create new</a>
+					<td>
+						<a href="{{ path('app_pokedex_show', {'id': pokedex.id}) }}">show</a>
+						{% if app.user %}
+
+							<a href="{{ path('app_pokedex_edit', {'id': pokedex.id}) }}">edit</a>
+						{% endif %}
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="5">no records found</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% if app.user %}
+
+		<a href="{{ path('app_pokedex_new') }}">Create new</a>
+	{% endif %}
 {% endblock %}
