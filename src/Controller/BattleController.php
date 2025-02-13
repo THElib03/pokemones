@@ -26,10 +26,10 @@ final class BattleController extends AbstractController
         ]);
     }
 
-    #[Route('/newWild/{id}', name: 'app_battle_new_wild', methods: ['POST'])]
+    #[Route('/newWild/{id}', name: 'app_battle_new_wild', methods: ['GET'])]
     public function newWild(int $id, PokedexRepository $pkdxRepo, PokemonRepository $pkmnRepo, Request $request, EntityManagerInterface $entMngr): Response{
         $battle = new Battle();
-        $pkmn = $pkmnRepo -> getPokemonById($id);
+        $pkmn = $pkmnRepo -> getPokemonById($id)[0];
 
         $wildPkdx = $pkdxRepo -> generateWildPokemon();
         $wild = new Pokemon();
@@ -75,10 +75,6 @@ final class BattleController extends AbstractController
             if(isset($request -> get('hunt')['flee'])){
                 $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
                 return $this->redirectToRoute('app_main');
-
-
-
-
             }
             elseif(isset($request -> get('hunt')['hunt'])){
                 if(rand(0, 9) > 5){

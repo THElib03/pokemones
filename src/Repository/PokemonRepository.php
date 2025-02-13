@@ -18,12 +18,17 @@ class PokemonRepository extends ServiceEntityRepository
 
     public function getUserPokemons($user)
     {
-        $query = $this->createQueryBuilder('p')
+        return $this->createQueryBuilder('p')
             ->where('p.user = :user')
             ->setParameter('user', $user)
-            ->getQuery();
+            ->getQuery() -> getResult();
+    }
 
-        return $query->getResult();
+    public function getPokemonById($id){
+        return $this -> createQueryBuilder('p')
+            -> where('p.id = :id')
+            -> setParameter('id', $id)
+            -> getQuery() -> getResult();
     }
 
 //    /**
