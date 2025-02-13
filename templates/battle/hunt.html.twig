@@ -1,17 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block body%}
+{% block body %}
     {% for type, messages in app.flashes %}
         {% for message in messages %}
             <div class="alert alert-{{ type }}">
-                {{ message }}
+                {{ message|raw }}
             </div>
         {% endfor %}
     {% endfor %}
 
-    <h1>¡Un {{pokemon.name}} salvaje ha aparecido!</h1>
-    <img src="{{pokemon.image}}" alt="">
-    <p>¿Que vas a hacer?</p>
+    <h1>¡Un {{ pokedex.name }} salvaje ha aparecido!</h1>
+
+    {% if pokedex.image %}
+        <img src="{{ asset('uploads/images/' ~ pokedex.image) }}" alt="{{ pokedex.name }}">
+    {% else %}
+        <p>No hay imagen disponible.</p>
+    {% endif %}
+
+    <p>¿Qué vas a hacer?</p>
 
     {{ form_start(form) }}
         {{ form_row(form.flee) }}
@@ -19,3 +25,4 @@
     {{ form_end(form) }}
 
 {% endblock %}
+

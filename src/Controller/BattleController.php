@@ -80,7 +80,7 @@ final class BattleController extends AbstractController
         }
 
         return $this -> render('battle/hunt.html.twig', [
-            'pokemon' => $pkdx, 'form' => $form
+            'pokedex' => $pkdx, 'form' => $form
         ]);
     }   
 
