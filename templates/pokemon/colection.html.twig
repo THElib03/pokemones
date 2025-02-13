@@ -35,8 +35,9 @@
 						<td>
 						{# TODO: Implementar las acciones #}
 							<a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">Entrenar</a>
-							<a href="{{ path('app_pokemon_fight', {'id': pokemon.id}) }}">Luchar</a>							
-							{# <a href="{{ path('app_pokemon_hunt', {'id': pokemon.id}) }}">Cazar</a> #}
+							<a href="{{ path('app_battle_new_wild', {'id': pokemon.id}) }}">Lucha contra pokemones salvajes</a>
+							<a href="{{ path('app_battle_new_simple', {'id': pokemon.id}) }}">Lucha contra otros entrenadores</a>
+							{# <a href="{{ path('app_battle_new_team'}}">Formar equipo para luchar</a> #}
 						</td>
 					{% else %}
 						<td><span>El pokemon esta muerto</span></td>

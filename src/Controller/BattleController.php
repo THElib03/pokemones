@@ -8,6 +8,7 @@ use App\Form\BattleType;
 use App\Form\HuntType;
 use App\Repository\BattleRepository;
 use App\Repository\PokedexRepository;
+use App\Repository\PokemonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,24 +26,44 @@ final class BattleController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_battle_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+    #[Route('/newWild/{id}', name: 'app_battle_new_wild', methods: ['POST'])]
+    public function newWild(int $id, PokedexRepository $pkdxRepo, PokemonRepository $pkmnRepo, Request $request, EntityManagerInterface $entMngr): Response{
         $battle = new Battle();
-        $form = $this->createForm(BattleType::class, $battle);
-        $form->handleRequest($request);
+        $pkmn = $pkmnRepo -> getPokemonById($id);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($battle);
-            $entityManager->flush();
+        $wildPkdx = $pkdxRepo -> generateWildPokemon();
+        $wild = new Pokemon();
+        $wild -> setPokedex($wildPkdx);
+        $wild -> setuser(null);
+        $wild -> setLevel(rand($pkmn -> getLevel() - 3, $pkmn -> getLevel() + 3));
+        $wild -> setPower(rand($pkmn -> getPower() - 15, $pkmn -> getPower() + 15));
+        $wild -> setIsAlive(true);
 
-            return $this->redirectToRoute('app_battle_index', [], Response::HTTP_SEE_OTHER);
-        }
+        $battle -> setUser1($this -> getUser());
+        $battle -> setPokemon1([$pkmn]);
+        $battle -> setPokemon2([$wild]);
+        $battle -> setState(-1);
+        $battle -> setConfirm([false, true]);
 
-        return $this->render('battle/new.html.twig', [
+        $entMngr -> persist($wild);
+        $entMngr -> persist($battle);
+        $entMngr -> flush();
+
+        return $this->render('battle/newWild.html.twig', [
             'battle' => $battle,
-            'form' => $form,
+            'pkmn1' => $pkmn, 'pkdx1' => $pkmn -> getPokedex(),
+            'pkmn2' => $wild, 'pkdx2' => $wildPkdx
         ]);
+    }
+
+    #[Route('/newSimple', name: 'app_battle_new_simple', methods: ['GET'])]
+    public function newSimple(Request $request, EntityManagerInterface $entityManager){
+
+    }
+
+    #[Route('/newTeam', name: 'app_battle_new_team', methods: ['GET'])]
+    public function newTeam(Request $request, EntityManagerInterface $entityManager){
+
     }
 
     #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET', 'POST'])]
@@ -84,7 +105,7 @@ final class BattleController extends AbstractController
         ]);
     }   
 
-    #[Route('/{id}', name: 'app_battle_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_battle', methods: ['GET'])]
     public function show(Battle $battle): Response
     {
         return $this->render('battle/show.html.twig', [
