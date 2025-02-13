@@ -53,6 +53,11 @@ final class BattleController extends AbstractController
         if($request -> get('hunt') !== null){
             if(isset($request -> get('hunt')['flee'])){
                 $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
+                return $this->redirectToRoute('app_main');
+
+
+
+
             }
             elseif(isset($request -> get('hunt')['hunt'])){
                 if(rand(0, 9) > 5){
