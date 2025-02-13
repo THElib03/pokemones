@@ -14,14 +14,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/pokemon')]
 final class PokemonController extends AbstractController
 {
-    #[Route(name: 'app_pokemon_index', methods: ['GET'])]
-    public function index(PokemonRepository $pokemonRepository): Response
-    {
-        return $this->render('pokemon/index.html.twig', [
-            'pokemon' => $pokemonRepository->findAll(),
-        ]);
-    }
-
     #[Route('/new', name: 'app_pokemon_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -39,20 +31,24 @@ final class PokemonController extends AbstractController
             $entityManager->persist($pokemon);
             $entityManager->flush();
     
-            return $this->redirectToRoute('app_pokemon_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_pokemon_colection', [], Response::HTTP_SEE_OTHER);
         }
     
         return $this->render('pokemon/new.html.twig', [
             'form' => $form,
         ]);
     }
+
     #[Route("/colection", name: 'app_pokemon_colection', methods: ['GET'])]
-    public function colectionn(PokemonRepository $pokemonRepository): Response
+    public function colection(PokemonRepository $pokemonRepository): Response
     {
         return $this->render('pokemon/colection.html.twig', [
             'pokemons' => $pokemonRepository->getUserPokemons($this->getUser()),
         ]);
     }
+
+    #[Route('/fight', name: 'app_pokemon_fight_wild', methods: ['GET'])]
+    // public function 
 
     #[Route('/{id}', name: 'app_pokemon_show', methods: ['GET'])]
     public function show(Pokemon $pokemon): Response
@@ -71,7 +67,7 @@ final class PokemonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_pokemon_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_pokemon_colection', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('pokemon/edit.html.twig', [
@@ -111,6 +107,6 @@ final class PokemonController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_pokemon_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_pokemon_colection', [], Response::HTTP_SEE_OTHER);
     }
 }

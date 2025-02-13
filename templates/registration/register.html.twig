@@ -9,11 +9,15 @@
 
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.username) }}
+        <br>
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
+        <br>
+        {{ form_row(registrationForm.makeAdmin) }}
+        <br>
         {{ form_row(registrationForm.agreeTerms) }}
-
+        <br>
         <button type="submit" class="btn">Register</button>
     {{ form_end(registrationForm) }}
 {% endblock %}

@@ -13,6 +13,7 @@
 				<th>Nombre</th>    <!-- TODO: Añadir imagen del pokemon -->
 				<th>Nivel</th>
 				<th>Poder</th>
+				<th>Estado</th>
 				<th>Acciones</th>
 			</tr>
 		</thead>
@@ -23,11 +24,18 @@
 					<td>{{ pokemon.pokedex.name }}</td>
 					<td>{{ pokemon.level }}</td>
 					<td>{{ pokemon.power }}</td>
+					<td>
+						{% if pokemon.isAlive %}
+							Activo
+						{% else %}
+						    Incapacitado
+						{% endif %}
+					</td>
 					{% if pokemon.isAlive %}
 						<td>
 						{# TODO: Implementar las acciones #}
 							<a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">Entrenar</a>
-							{# <a href="{{ path('app_pokemon_fight', {'id': pokemon.id}) }}">Pelear</a> #}
+							<a href="{{ path('app_pokemon_fight', {'id': pokemon.id}) }}">Luchar</a>							
 							{# <a href="{{ path('app_pokemon_hunt', {'id': pokemon.id}) }}">Cazar</a> #}
 						</td>
 					{% else %}

@@ -133,7 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->pokemons->contains($pokemon)) {
             $this->pokemons->add($pokemon);
-            $pokemon->setUserId($this);
+            $pokemon->setUser($this);
         }
 
         return $this;
@@ -143,8 +143,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->pokemons->removeElement($pokemon)) {
             // set the owning side to null (unless already changed)
-            if ($pokemon->getUserId() === $this) {
-                $pokemon->setUserId(null);
+            if ($pokemon->getUser() === $this) {
+                $pokemon->setUser(null);
             }
         }
 

@@ -66,7 +66,7 @@ final class BattleController extends AbstractController
                     $entityManager -> persist($pkmn);
                     $entityManager -> flush();
 
-                    $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' . $pkdx -> getName() . '\npuedes revisarlo en tu coleción.');
+                    $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' . $pkdx -> getName() . '<br>puedes revisarlo en tu coleción.');
                 }
                 else{
                     $this -> addFlash('warning', '¡Vaya! ' . $pkdx -> getName() . ' se ha resistido a tus encantos.');
@@ -75,7 +75,7 @@ final class BattleController extends AbstractController
         }
 
         return $this -> render('battle/hunt.html.twig', [
-            'pokemon' => $pkmn, 'form' => $form
+            'pokemon' => $pkdx, 'form' => $form
         ]);
     }   
 
