@@ -39,12 +39,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Pokemon>
      */
-    #[ORM\OneToMany(targetEntity: Pokemon::class, mappedBy: 'userId')]
+    #[ORM\OneToMany(targetEntity: Pokemon::class, mappedBy: 'user')]
     private Collection $pokemons;
+
+    /**
+     * @var Collection<int, Battle>
+     */
+    #[ORM\OneToMany(targetEntity: Battle::class, mappedBy: 'user1')]
+    #[ORM\OneToMany(targetEntity: Battle::class, mappedBy: 'user2')]
+    private Collection $battles;
 
     public function __construct()
     {
         $this->pokemons = new ArrayCollection();
+        $this->battles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,6 +153,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($pokemon->getUser() === $this) {
                 $pokemon->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Battle>
+     */
+    public function getBattles(): Collection
+    {
+        return $this->battles;
+    }
+
+    public function addBattle(Battle $battle): static
+    {
+        if (!$this->battles->contains($battle)) {
+            $this->battles->add($battle);
+            $battle->setUser1($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBattle(Battle $battle): static
+    {
+        if ($this->battles->removeElement($battle)) {
+            // set the owning side to null (unless already changed)
+            if ($battle->getUser1() === $this) {
+                $battle->setUser1(null);
             }
         }
 

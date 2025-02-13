@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Batalla Salvaje{% endblock %}
+
+{% block body %}
+    <h1>Batalla contra un {{ pkdx2.name }} salvaje</h1>
+
+    <table>
+        <tbody>
+            {# Vs #}
+            <tr>
+                <td colspan="2"><p>{{ battle.user1.name }} vs. {{ battle.user2.name }}</p></td>
+            </tr>
+            {# Image #}
+            <tr>
+                <td>
+                    <img src="{{ asset('uploads/images/' ~ pkdx1.image) }}" alt="{{ pkdx1.name }}">
+                    <p>{{ pkdx1.name }}</p>
+                </td>
+                <td>
+                    <img src="{{ asset('uploads/images/' ~ pkdx2.image) }}" alt="{{ pkdx2.name }}">
+                    <p>{{ pkdx2.name }}</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form action="{{ path('app_battle', {'id': battle.id}) }}" method="post">
+        <input type="submit" value="Fight">
+    </form>
+    {# <a href="{{ path('app_pokemon_colection') }}">Volver a mis pokemons</a> #}
+{% endblock %}

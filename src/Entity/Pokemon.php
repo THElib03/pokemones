@@ -20,7 +20,7 @@ class Pokemon
     private ?Pokedex $pokedex = null;
 
     #[ORM\ManyToOne(inversedBy: 'pokemons')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     #[ORM\Column]
@@ -120,7 +120,7 @@ class Pokemon
     {
         if (!$this->battles->contains($battle)) {
             $this->battles->add($battle);
-            $battle->setPokemon($this);
+            $battle->setPokemon1([$this]);
         }
 
         return $this;
@@ -130,8 +130,8 @@ class Pokemon
     {
         if ($this->battles->removeElement($battle)) {
             // set the owning side to null (unless already changed)
-            if ($battle->getPokemon() === $this) {
-                $battle->setPokemon(null);
+            if ($battle->getPokemon1() === $this) {
+                $battle->setPokemon1([null]);
             }
         }
 
