@@ -16,11 +16,18 @@ class PokedexRepository extends ServiceEntityRepository
         parent::__construct($registry, Pokedex::class);
     }
 
-    public function generateWildPokemon(){
+    public function generateWildPokemon(): Pokedex{
         $pkmns = $this -> createQueryBuilder('p')
             -> getQuery() -> getResult();
 
         return $pkmns[rand(0, sizeof($pkmns) - 1)];
+    }
+
+    public function getPokedexById(int $id): Pokedex|null{
+        return $this -> createQueryBuilder('p')
+            -> where('p.id = :id')
+            -> setParameter('id', $id)
+            -> getQuery() -> getResult()[0] ?? null;
     }
 
 //    /**

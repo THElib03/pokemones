@@ -66,40 +66,46 @@ final class BattleController extends AbstractController
 
     }
 
-    #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET', 'POST'])]
+    #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET'])]
     public function hunt(PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
         $pkdx = $pokeRepo -> generateWildPokemon();
-        $form = $this -> createForm(HuntType::class, null, ['method' => 'POST']);
 
-        if($request -> get('hunt') !== null){
-            if(isset($request -> get('hunt')['flee'])){
-                $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
-                return $this->redirectToRoute('app_main');
+        return $this -> render('battle/hunt.html.twig', [
+            'pokedex' => $pkdx,
+        ]);
+    }
+    
+    #[Route('/hunt_end/{id}', name: 'app_battle_hunt_end', methods: ['GET', 'POST'])]
+    public function huntEnd(int $id, PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
+        $pkdx = $pokeRepo -> getPokedexById($id);
+
+        if($request -> get('flee') !== null){
+            $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
+            return $this->redirectToRoute('app_main');
+        }
+        elseif($request -> get('hunt') !== null){
+            if(rand(0, 9) > 3){
+                $pkmn = new Pokemon();
+                $pkmn -> setPokedex($pkdx);
+                $pkmn -> setuser($this -> getUser());
+                $pkmn -> setLevel(1);
+                $pkmn -> setPower(10);
+                $pkmn -> setIsAlive(true);
+
+                $entityManager -> persist($pkmn);
+                $entityManager -> flush();
+
+                $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' .  $pkdx -> getName() . 'puedes revisarlo en tu coleción.');
+
+                return $this -> redirectToRoute('app_pokemon_colection');
             }
-            elseif(isset($request -> get('hunt')['hunt'])){
-                if(rand(0, 9) > 5){
-                    $pkmn = new Pokemon();
-                    $pkmn -> setPokedex($pkdx);
-                    $pkmn -> setuser($this -> getUser());
-                    $pkmn -> setLevel(1);
-                    $pkmn -> setPower(10);
-                    $pkmn -> setIsAlive(true);
-
-                    $entityManager -> persist($pkmn);
-                    $entityManager -> flush();
-
-                    $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' . $pkdx -> getName() . '<br>puedes revisarlo en tu coleción.');
-                }
-                else{
-                    $this -> addFlash('warning', '¡Vaya! ' . $pkdx -> getName() . ' se ha resistido a tus encantos.');
-                }
+            else{
+                $this -> addFlash('warning', '¡Vaya! ' .  $pkdx -> getName() . ' se ha resistido a tus encantos.');
             }
         }
 
-        return $this -> render('battle/hunt.html.twig', [
-            'pokedex' => $pkdx, 'form' => $form
-        ]);
-    }   
+        return $this -> redirectToRoute('app_main');
+    }
 
     #[Route('/{id}', name: 'app_battle', methods: ['GET'])]
     public function show(Battle $battle): Response
