@@ -96,6 +96,8 @@ final class BattleController extends AbstractController
                 $entityManager -> flush();
 
                 $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' .  $pkdx -> getName() . 'puedes revisarlo en tu coleción.');
+
+                return $this -> redirectToRoute('app_pokemon_colection');
             }
             else{
                 $this -> addFlash('warning', '¡Vaya! ' .  $pkdx -> getName() . ' se ha resistido a tus encantos.');
