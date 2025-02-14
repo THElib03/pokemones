@@ -4,14 +4,6 @@
 {% endblock %}
 
 {% block body %}
-
-	{% for type, messages in app.flashes %}
-		{% for message in messages %}
-			<div class="alert alert-{{ type }}">
-				{{ message }}
-			</div>
-		{% endfor %}
-	{% endfor %}
 	{% if app.user %}
 	<a href="{{ path('app_logout') }}">Logout</a> <br/>
 		<h1>Hello {{ app.user.username }}</h1>
