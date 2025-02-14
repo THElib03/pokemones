@@ -10,11 +10,6 @@
     {% endif %}
 
     <p>¿Qué vas a hacer?</p>
-
-    {# {{ form_start(form) }}
-        {{ form_row(form.flee) }}
-        {{ form_row(form.hunt) }}
-    {{ form_end(form) }} #}
     
     <form action="{{ path('app_battle_hunt_end', {'id': pokedex.id}) }}" method="post">
         <input type="hidden" name="id" value="{{ pokedex.id }}">

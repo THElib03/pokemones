@@ -69,35 +69,9 @@ final class BattleController extends AbstractController
     #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET'])]
     public function hunt(PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
         $pkdx = $pokeRepo -> generateWildPokemon();
-        $form = $this -> createForm(HuntType::class, null, ['method' => 'POST']);
-
-        if($request -> get('hunt') !== null){
-            if(isset($request -> get('hunt')['flee'])){
-                $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
-                return $this->redirectToRoute('app_main');
-            }
-            elseif(isset($request -> get('hunt')['hunt'])){
-                if(rand(0, 9) > 5){
-                    $pkmn = new Pokemon();
-                    $pkmn -> setPokedex($pkdx);
-                    $pkmn -> setuser($this -> getUser());
-                    $pkmn -> setLevel(1);
-                    $pkmn -> setPower(10);
-                    $pkmn -> setIsAlive(true);
-
-                    $entityManager -> persist($pkmn);
-                    $entityManager -> flush();
-
-                    $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' . $pkdx -> getName() . '<br>puedes revisarlo en tu coleción.');
-                }
-                else{
-                    $this -> addFlash('warning', '¡Vaya! ' . $pkdx -> getName() . ' se ha resistido a tus encantos.');
-                }
-            }
-        }
 
         return $this -> render('battle/hunt.html.twig', [
-            'pokedex' => $pkdx, 'form' => $form
+            'pokedex' => $pkdx,
         ]);
     }
     
