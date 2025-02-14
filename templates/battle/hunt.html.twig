@@ -1,14 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {% for type, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ type }}">
-                {{ message|raw }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
     <h1>¡Un {{ pokedex.name }} salvaje ha aparecido!</h1>
 
     {% if pokedex.image %}
@@ -19,10 +11,17 @@
 
     <p>¿Qué vas a hacer?</p>
 
-    {{ form_start(form) }}
+    {# {{ form_start(form) }}
         {{ form_row(form.flee) }}
         {{ form_row(form.hunt) }}
-    {{ form_end(form) }}
+    {{ form_end(form) }} #}
+    
+    <form action="{{ path('app_battle_hunt_end', {'id': pokedex.id}) }}" method="post">
+        <input type="hidden" name="id" value="{{ pokedex.id }}">
+        <input type="hidden" name="name" value="{{ pokedex.name }}">
 
+        <input type="submit" name="flee" value="¡Huye!">
+        <input type="submit" name="hunt" value="¡Atrápalo!">
+    </form>
 {% endblock %}
 
