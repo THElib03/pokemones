@@ -29,7 +29,7 @@ final class BattleController extends AbstractController
     #[Route('/newWild/{id}', name: 'app_battle_new_wild', methods: ['GET'])]
     public function newWild(int $id, PokedexRepository $pkdxRepo, PokemonRepository $pkmnRepo, Request $request, EntityManagerInterface $entMngr): Response{
         $battle = new Battle();
-        $pkmn = $pkmnRepo -> getPokemonById($id)[0];
+        $pkmn = $pkmnRepo -> getPokemonById($id);
 
         $wildPkdx = $pkdxRepo -> generateWildPokemon();
         $wild = new Pokemon();
@@ -66,6 +66,11 @@ final class BattleController extends AbstractController
 
     }
 
+    #[Route('/confirm/{id}', name: 'app_battle_confirm', methods: ['POST'])]
+    public function confirm(Request $request, EntityManagerInterface $entityManager){
+        $battle = $entityManager -> find(Battle::class, $request -> get('battle_id'));
+    }
+
     #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET'])]
     public function hunt(PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
         $pkdx = $pokeRepo -> generateWildPokemon();
@@ -75,7 +80,7 @@ final class BattleController extends AbstractController
         ]);
     }
     
-    #[Route('/hunt_end/{id}', name: 'app_battle_hunt_end', methods: ['GET', 'POST'])]
+    #[Route('/hunt/{id}', name: 'app_battle_hunt_end', methods: ['GET', 'POST'])]
     public function huntEnd(int $id, PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
         $pkdx = $pokeRepo -> getPokedexById($id);
 
@@ -105,6 +110,21 @@ final class BattleController extends AbstractController
         }
 
         return $this -> redirectToRoute('app_main');
+    }
+
+    #[Route('/end/{id}', name: 'app_battle_end', methods: ['GET'])]
+    public function battleEnd(int $id, BattleRepository $bttlRepo, Request $request, EntityManagerInterface $entMngr): Response{
+        $battle = $bttlRepo -> getBattleById($id);
+        if($battle -> getState() < 3 && $battle -> getResult() !== null){
+            $this -> addFlash('warning', 'This battle cannot be fought yet, please wait before all players confirm.');
+            return $this->redirectToRoute('app_pokemon_colection');
+        }
+
+
+
+        return $this->render('battle/end.html.twig', [
+            'battle' => $battle,
+        ]);
     }
 
     #[Route('/{id}', name: 'app_battle', methods: ['GET'])]
