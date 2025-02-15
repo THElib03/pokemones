@@ -16,6 +16,13 @@ class BattleRepository extends ServiceEntityRepository
         parent::__construct($registry, Battle::class);
     }
 
+    public function getBattleById(int $id): Battle|null{
+        return $this -> createQueryBuilder('b')
+            -> andWhere('b.id = :id')
+            -> setParameter('id', $id)
+            -> getQuery() -> getResult()[0] ?? null;
+    }
+
 //    /**
 //     * @return Battle[] Returns an array of Battle objects
 //     */

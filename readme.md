@@ -92,3 +92,11 @@
         - HuntWin
             - Evolve
         - HuntLose
+
+### Terminar batalla
+Puede que me esté complicando de más, lo que he dejado escrito son dos
+funciones, una para revisar que jugadores han confirmado y otra para
+hacer el calculo de la batalla si todo esta confirmado, hay una mini
+guía de que valores indican si la batalla está lista o esperando a algo.
+No estoy seguro si es lo mejor, si se os ocurre algo mejor no dudeis
+en borrar lo mío.

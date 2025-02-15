@@ -32,7 +32,8 @@ class Battle
      * 0 - Battle created for PvP & teams (battle not started, waiting for other player)
      * 1 - PvP battle assigned, waiting for second player to confirm.
      * 2 - Team battle assigned, waiting for players to confirm.
-     * 3 - Battle (all types) is fought and state field is set.
+     * 3 - All players confirmed, placeholder just in case before fight calcs.
+     * 4 - Battle (all types) is fought and state field is set.
      */
     #[ORM\Column]
     private ?int $state = null;
@@ -42,7 +43,7 @@ class Battle
      * any int - id of the winning user (0 in the case of wild winning)
      */
     #[ORM\Column(nullable: true)]
-    private ?bool $result = null;
+    private ?int $result = null;
 
     #[ORM\Column(type: Types::ARRAY)]
     private array $confirm = [];
@@ -100,12 +101,12 @@ class Battle
         return $this;
     }
 
-    public function isResult(): ?bool
+    public function getResult(): ?int
     {
         return $this->result;
     }
 
-    public function setResult(?bool $result): static
+    public function setResult(?int $result): static
     {
         $this->result = $result;
 
