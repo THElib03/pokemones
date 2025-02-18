@@ -29,13 +29,13 @@ class Battle
 
     /* Guide to state:
      * -1 - Battle created for PvE (battle not started, waiting for player to confirm)
-     * 0 - Battle created for PvP & teams (battle not started, waiting for other player)
+     * 0 - Battle created for PvP & teams (battle not started, waiting for sencond player to join)
      * 1 - PvP battle assigned, waiting for second player to confirm.
      * 2 - Team battle assigned, waiting for players to confirm.
      * 3 - All players confirmed, placeholder just in case before fight calcs.
      * 4 - Battle (all types) is fought and state field is set.
      */
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $state = null;
 
     /* Guide to result: 
