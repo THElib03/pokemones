@@ -66,11 +66,6 @@ final class BattleController extends AbstractController
 
     }
 
-    #[Route('/confirm/{id}', name: 'app_battle_confirm', methods: ['POST'])]
-    public function confirm(Request $request, EntityManagerInterface $entityManager){
-        $battle = $entityManager -> find(Battle::class, $request -> get('battle_id'));
-    }
-
     #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET'])]
     public function hunt(PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
         $pkdx = $pokeRepo -> generateWildPokemon();
@@ -78,6 +73,60 @@ final class BattleController extends AbstractController
         return $this -> render('battle/hunt.html.twig', [
             'pokedex' => $pkdx,
         ]);
+    }
+
+    #[Route('end_options/{id}', name: 'app_battle_end_options', methods: ['GET', 'POST'])]
+    public function endOptions(int $id, Request $request, EntityManagerInterface $entMngr): Response {
+        $battle = $entMngr -> find(Battle::class, $id);
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+        }
+
+        return $this -> render('battle/endOptions.html.twig', [
+            'battle' => $battle,
+        ]);
+    }
+
+    #[Route('/confirm/{id}', name: 'app_battle_confirm', methods: ['POST'])]
+    public function confirm(int $id, Request $request, EntityManagerInterface $entMngr){
+        $battle = $entMngr -> find(Battle::class, $id);
+
+        if($this -> getUser() === $battle->getUser1() || $this -> getUser() === $battle->getUser2()){
+            $cnfrmtn = $battle -> getConfirm();
+
+            if($this -> getUser() === $battle -> getUser1()){
+                $cnfrmtn[0] = true;                
+            }
+            elseif($this -> getUser() === $battle -> getUser2()){
+                $cnfrmtn[1] = true;
+            }
+
+            $battle -> setConfirm($cnfrmtn);
+
+            if($cnfrmtn[0] && $cnfrmtn[1]){
+                $battle -> setState(3);
+
+                $entMngr -> persist($battle);
+                $entMngr -> flush();
+                return $this -> redirectToRoute('app_battle_end', ['id' => $battle -> getId()]);
+            }
+            elseif(sizeof($battle -> getPokemon2()) > 1){
+                $battle -> setState(2);
+            }
+            elseif($battle -> getUser2() -> getId() != 0){
+                $battle -> setState(1);
+            }
+
+            $this -> addFlash('warning', 'Waiting for ' . $battle->getUser2() -> getUsername() . ' to confirm the battle, you can check later in your battle history.');
+        }
+        else{
+            $this -> addFlash('warning', 'Something went wrong: not allowed in this battle.');
+        }
+
+        $entMngr -> persist($battle);
+        $entMngr -> flush();
+        return $this->redirectToRoute('app_pokemon_colection');
     }
     
     #[Route('/hunt/{id}', name: 'app_battle_hunt_end', methods: ['GET', 'POST'])]
@@ -115,16 +164,45 @@ final class BattleController extends AbstractController
     #[Route('/end/{id}', name: 'app_battle_end', methods: ['GET'])]
     public function battleEnd(int $id, BattleRepository $bttlRepo, Request $request, EntityManagerInterface $entMngr): Response{
         $battle = $bttlRepo -> getBattleById($id);
-        if($battle -> getState() < 3 && $battle -> getResult() !== null){
+        if($battle -> getState() < 3 || $battle -> getResult() !== null){
             $this -> addFlash('warning', 'This battle cannot be fought yet, please wait before all players confirm.');
             return $this->redirectToRoute('app_pokemon_colection');
         }
+        elseif(sizeof($battle -> getPokemon1()) != sizeof($battle -> getPokemon2())){
+            $this -> addFlash('warning', 'Something went wrong: pokemon count mismatch.');
+            return $this->redirectToRoute('app_pokemon_colection');
+        }
 
+        $count = 0;
+        for($i=0; $i < sizeof($battle -> getPokemon1()); $i++){ 
+            $punch1 = $battle -> getPokemon1()[$i] -> getLevel() * $battle -> getPokemon1()[$i] -> getPower();
+            $punch2 = $battle -> getPokemon2()[$i] -> getLevel() * $battle -> getPokemon2()[$i] -> getPower();
 
+            if($punch1 > $punch2){
+                $count++;
+                $battle -> getPokemon2()[$i] -> setIsAlive(false);
+            }
+            elseif($punch1 < $punch2){
+                $count--;
+                $battle -> getPokemon1()[$i] -> setIsAlive(false);
+            }
+        }
 
-        return $this->render('battle/end.html.twig', [
-            'battle' => $battle,
-        ]);
+        if($count > 0){
+            $battle -> setResult($battle -> getUser1() -> getId());
+        }
+        elseif($count < 0){
+            $battle -> setResult($battle -> getUser2() -> getId());
+        }
+        else{
+            $battle -> setResult(-1);
+        }
+
+        $battle -> setState(4);
+        $entMngr -> persist($battle);
+        $entMngr -> flush();
+
+        return $this -> redirectToRoute('app_battle_end_options', ['id' => $battle -> getId()]);
     }
 
     #[Route('/{id}', name: 'app_battle', methods: ['GET'])]
@@ -133,35 +211,6 @@ final class BattleController extends AbstractController
         return $this->render('battle/show.html.twig', [
             'battle' => $battle,
         ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_battle_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Battle $battle, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(BattleType::class, $battle);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_battle_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('battle/edit.html.twig', [
-            'battle' => $battle,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_battle_delete', methods: ['POST'])]
-    public function delete(Request $request, Battle $battle, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$battle->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($battle);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_battle_index', [], Response::HTTP_SEE_OTHER);
     }
 }
 

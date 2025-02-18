@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if battle.result == -1 %}
+    <h2>¡Empate!</h2>
+    <p>Tus pokemones sobreviven un día más</p>
+    <a href="{{ path('app_pokemon_colection')}}">Volver a la colección</a>
+    {% elseif battle.result == app.user.id %}
+        <h2>¡Has ganado!</h2>
+        <p>Como recompensa puedes elegir una de las siguientes opciones</p>
+        <form action=""></form>
+    {% else %}
+        <h2>¡Has perdido!</h2>
+        <p>Mejor suerte la próxima vez</p>
+        <a href="{{ path('app_pokemon_colection')}}">Volver a la colección</a>
+    {% endif %}
+{% endblock %}
