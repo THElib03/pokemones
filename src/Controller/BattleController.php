@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Battle;
 use App\Entity\Pokemon;
-use App\Form\BattleType;
-use App\Form\HuntType;
 use App\Repository\BattleRepository;
 use App\Repository\PokedexRepository;
 use App\Repository\PokemonRepository;
@@ -66,25 +64,92 @@ final class BattleController extends AbstractController
 
     }
 
-    #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET'])]
-    public function hunt(PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
-        $pkdx = $pokeRepo -> generateWildPokemon();
+    #[Route('/hunt', name: 'app_battle_hunt', methods: ['GET', 'POST'])]
+    public function hunt(PokedexRepository $pkdxRepo, PokemonRepository $pkmnRepo, Request $request, EntityManagerInterface $entityManager): Response {
+        $pkdx = $pkdxRepo -> generateWildPokemon();
+        $id = -1;
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $pkmn = $pkmnRepo -> getPokemonById($_POST['pkmn']);
+            $pkdx = $pkmn -> getPokedex();
+            $id = $pkmn -> getId();
+        }
 
         return $this -> render('battle/hunt.html.twig', [
             'pokedex' => $pkdx,
+            'id' => $id,
         ]);
     }
 
+    #[Route('/huntEnd', name: 'app_battle_hunt_end', methods: ['POST'])]
+    public function huntEnd(PokedexRepository $pkdxRepo, PokemonRepository $pkmnRepo, Request $request, EntityManagerInterface $entityManager): Response {
+        $pkdx = $pkdxRepo -> getPokedexById($request -> get('id'));
+
+        if($request -> get('flee') !== null){
+            $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
+            return $this->redirectToRoute('app_main');
+        }
+        elseif($request -> get('hunt') !== null){
+            if(rand(0, 9) > 3){
+                if($request -> get('pkmn') === null){
+                    $pkmn = new Pokemon();
+                    $pkmn -> setPokedex($pkdx);
+                    $pkmn -> setuser($this -> getUser());
+                    $pkmn -> setLevel(1);
+                    $pkmn -> setPower(10);
+                    $pkmn -> setIsAlive(true);
+
+                    $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' .  $pkdx -> getName() . 'puedes revisarlo en tu coleción.');
+                }
+                else{
+                    $pkmn = $pkmnRepo -> getPokemonById($request -> get('pkmn'));
+                    $pkmn -> setUser($this -> getUser());
+                    $this -> addFlash('warning', '¡Bravo! ' . $pkdx -> getName() . ' es ahora tu nuevo esclavo, disfrútalo.');
+                }
+                
+                $entityManager -> persist($pkmn);
+                $entityManager -> flush();
+                return $this -> redirectToRoute('app_pokemon_colection');
+            }
+            else{
+                $this -> addFlash('warning', '¡Vaya! ' .  $pkdx -> getName() . ' se ha resistido a tus encantos.');
+            }
+        }
+
+        return $this -> redirectToRoute('app_main');
+    }
+
     #[Route('end_options/{id}', name: 'app_battle_end_options', methods: ['GET', 'POST'])]
-    public function endOptions(int $id, Request $request, EntityManagerInterface $entMngr): Response {
-        $battle = $entMngr -> find(Battle::class, $id);
+    public function endOptions(int $id, PokemonRepository $pkmnRepo, BattleRepository $bttlRepo, Request $request, EntityManagerInterface $entMngr): Response {
+        $battle = $bttlRepo -> getBattleById($id);
+        if($battle -> getResult() === null || $battle -> getState() === 4){
+            $this -> addFlash('warning', 'This battle has already ended and no more prizes can be collected.');
+            $this -> redirectToRoute('app_pokemon_colection');
+        }
+
+        $dead = $pkmnRepo -> getDeadPokemones($this -> getUser());
 
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $pkmn = $pkmnRepo -> getPokemonById($_POST['pkmn']);
 
+            if(isset($_POST['levelup'])){
+                $pkmn -> setLevel($pkmn -> getLevel() + 1);
+            }
+            elseif(isset($_POST['revive'])){
+                $pkmn -> setIsAlive(true);
+            }
+
+            $battle -> setState(4);
+            $entMngr -> persist($battle);
+            $entMngr -> persist($pkmn);
+            $entMngr -> flush();
+
+            $this -> redirectToRoute('app_pokemon_colection');
         }
 
         return $this -> render('battle/endOptions.html.twig', [
             'battle' => $battle,
+            'deadPkmn' => $dead,
         ]);
     }
 
@@ -128,38 +193,6 @@ final class BattleController extends AbstractController
         $entMngr -> flush();
         return $this->redirectToRoute('app_pokemon_colection');
     }
-    
-    #[Route('/hunt/{id}', name: 'app_battle_hunt_end', methods: ['GET', 'POST'])]
-    public function huntEnd(int $id, PokedexRepository $pokeRepo, Request $request, EntityManagerInterface $entityManager): Response {
-        $pkdx = $pokeRepo -> getPokedexById($id);
-
-        if($request -> get('flee') !== null){
-            $this -> addFlash('warning', 'Has huido como un cobarde del ' . $pkdx -> getName() . '.');
-            return $this->redirectToRoute('app_main');
-        }
-        elseif($request -> get('hunt') !== null){
-            if(rand(0, 9) > 3){
-                $pkmn = new Pokemon();
-                $pkmn -> setPokedex($pkdx);
-                $pkmn -> setuser($this -> getUser());
-                $pkmn -> setLevel(1);
-                $pkmn -> setPower(10);
-                $pkmn -> setIsAlive(true);
-
-                $entityManager -> persist($pkmn);
-                $entityManager -> flush();
-
-                $this -> addFlash('warning', '¡Bravo! Has esclavizado un nuevo ' .  $pkdx -> getName() . 'puedes revisarlo en tu coleción.');
-
-                return $this -> redirectToRoute('app_pokemon_colection');
-            }
-            else{
-                $this -> addFlash('warning', '¡Vaya! ' .  $pkdx -> getName() . ' se ha resistido a tus encantos.');
-            }
-        }
-
-        return $this -> redirectToRoute('app_main');
-    }
 
     #[Route('/end/{id}', name: 'app_battle_end', methods: ['GET'])]
     public function battleEnd(int $id, BattleRepository $bttlRepo, Request $request, EntityManagerInterface $entMngr): Response{
@@ -192,13 +225,17 @@ final class BattleController extends AbstractController
             $battle -> setResult($battle -> getUser1() -> getId());
         }
         elseif($count < 0){
-            $battle -> setResult($battle -> getUser2() -> getId());
+            if($battle -> getUser2() === null){
+                $battle -> setResult(-1);
+            }    
+            else{
+                $battle -> setResult($battle -> getUser2() -> getId());
+            }
         }
         else{
             $battle -> setResult(-1);
         }
 
-        $battle -> setState(4);
         $entMngr -> persist($battle);
         $entMngr -> flush();
 

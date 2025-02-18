@@ -8,7 +8,47 @@
     {% elseif battle.result == app.user.id %}
         <h2>¡Has ganado!</h2>
         <p>Como recompensa puedes elegir una de las siguientes opciones</p>
-        <form action=""></form>
+
+        <h4>Subir de nivel uno de tus pokemons:</h4>
+        <form action="{{ path('app_battle_end_options', {'id': battle.id}) }}" method="post">
+            {% if battle.result == battle.user1.id %}
+                {% for pkmn in battle.pokemon1 %}
+                    <label for="{{pkmn.pokedex.name}}">{{pkmn.pokedex.name}}</label>
+                    <input type="radio" name="pkmn" id="{{pkmn.pokedex.name}}" value="{{pkmn.id}}">
+                {% endfor %}
+            {% elseif battle.result == battle.user2.id %}
+                {% for pkmn in battle.pokemon2 %}
+                    <label for="{{pkmn.pokedex.name}}">{{pkmn.pokedex.name}}</label>
+                    <input type="radio" name="pkmn" id="{{pkmn.pokedex.name}}" value="{{pkmn.id}}">
+                {% endfor %}
+            {% endif %}
+            <input type="submit" name="levelup" value="Subir de nivel">
+        </form>
+
+        <h4>Cazar unos de los pokemones enemigos:</h4>
+        <form action="{{ path('app_battle_hunt') }}" method="post">
+            {% if battle.result == battle.user1.id %}
+                {% for pkmn in battle.pokemon2 %}
+                    <label for="{{pkmn.pokedex.name}}">{{pkmn.pokedex.name}}</label>
+                    <input type="radio" name="pkmn" id="{{pkmn.pokedex.name}}" value="{{pkmn.id}}">
+                {% endfor %}
+            {% elseif battle.result == battle.user2.id %}
+                {% for pkmn in battle.pokemon1 %}
+                    <label for="{{pkmn.pokedex.name}}">{{pkmn.pokedex.name}}</label>
+                    <input type="radio" name="pkmn" id="{{pkmn.pokedex.name}}" value="{{pkmn.id}}">
+                {% endfor %}
+            {% endif %}
+            <input type="submit" name="hunt" value="Atrapar">
+        </form>
+
+        <h4>Recupera uno de tus pokemones incapacitados:</h4>
+        <form action="{{ path('app_battle_end_options', {'id': battle.id}) }}" method="post">
+            {% for pkmn in deadPkmn %}
+                <label for="{{pkmn.pokedex.name}}">{{pkmn.pokedex.name}}</label>
+                <input type="radio" name="hunt" id="{{pkmn.pokedex.name}}" value="{{pkmn.id}}">
+            {% endfor %}
+            <input type="submit" name="revive" value="Recuperar">
+        </form>
     {% else %}
         <h2>¡Has perdido!</h2>
         <p>Mejor suerte la próxima vez</p>

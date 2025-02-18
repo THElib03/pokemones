@@ -30,6 +30,15 @@ class PokemonRepository extends ServiceEntityRepository
             -> getQuery() -> getResult()[0] ?? null;
     }
 
+    public function getDeadPokemones($user): array|null{
+        return $this -> createQueryBuilder('p')
+            -> where('p.user = :user')
+            -> setParameter('user', $user)
+            -> andWhere('p.isAlive = :false')
+            -> setParameter('false', false)
+            -> getQuery() -> getResult();
+    }
+
 //    /**
 //     * @return Pokemon[] Returns an array of Pokemon objects
 //     */
