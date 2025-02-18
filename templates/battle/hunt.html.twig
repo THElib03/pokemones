@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>¡Un {{ pokedex.name }} salvaje ha aparecido!</h1>
+    {% if id != -1 %}
+        <h1>¡Atrapa al {{pokedex.name}} enemigo!</h1>
+    {% else %}
+        <h1>¡Un {{ pokedex.name }} salvaje ha aparecido!</h1>
+    {% endif %}
 
     {% if pokedex.image %}
         <img src="{{ asset('uploads/images/' ~ pokedex.image) }}" alt="{{ pokedex.name }}">
@@ -11,9 +15,11 @@
 
     <p>¿Qué vas a hacer?</p>
     
-    <form action="{{ path('app_battle_hunt_end', {'id': pokedex.id}) }}" method="post">
+    <form action="{{ path('app_battle_hunt_end') }}" method="post">
+    {% if id != -1 %}
+        <input type="hidden" name="pkmn" value="{{id}}">
+    {% endif %}
         <input type="hidden" name="id" value="{{ pokedex.id }}">
-        <input type="hidden" name="name" value="{{ pokedex.name }}">
 
         <input type="submit" name="flee" value="¡Huye!">
         <input type="submit" name="hunt" value="¡Atrápalo!">

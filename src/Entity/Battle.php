@@ -32,8 +32,8 @@ class Battle
      * 0 - Battle created for PvP & teams (battle not started, waiting for sencond player to join)
      * 1 - PvP battle assigned, waiting for second player to confirm.
      * 2 - Team battle assigned, waiting for players to confirm.
-     * 3 - All players confirmed, placeholder just in case before fight calcs.
-     * 4 - Battle (all types) is fought and state field is set.
+     * 3 - All players confirmed, placeholder just in case before fight calcs and the winner has chosen their prize.
+     * 4 - Battle (all types) is fought, state field is set and winner has received prize.
      */
     #[ORM\Column(nullable: true)]
     private ?int $state = null;
