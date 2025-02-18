@@ -24,13 +24,13 @@ class PokemonApiController extends AbstractController
                 'pokedex' => $pokemon->getPokedex()->getId(),
                 'level' => $pokemon->getLevel(),
                 'power' => $pokemon->getPower(),
-                'isAlive' => $pokemon->getIsAlive(),
+                'isAlive' => $pokemon->isAlive(),
             ];
         }, $pokemons);
 
         return $this->json([
             'success' => true,
-            'data' => $pokemons
+            'data' => $pokemonData
         ]);
     }
 }
