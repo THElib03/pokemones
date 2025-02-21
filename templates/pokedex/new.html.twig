@@ -1,16 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Crear nuevo Pokémon{% endblock %}
+{% block title %}Add New Pokémon{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Crear nuevo Pokémon</h1>
+    <div class="form-container">
+        <h1>Add New Pokémon</h1>
 
         {{ form_start(form, { 'method': 'POST' }) }}
             {{ form_widget(form) }}
-            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Catch Pokémon!
+            </button>
         {{ form_end(form) }}
 
-        <a href="{{ path('app_pokedex_index') }}" class="btn btn-secondary mt-2">Volver a la lista</a>
+        <a href="{{ path('app_pokedex_index') }}" class="btn btn-secondary mt-4">
+            <i class="fas fa-arrow-left"></i> Back to Pokédex
+        </a>
     </div>
 {% endblock %}
