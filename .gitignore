@@ -30,3 +30,11 @@
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< php-cs-fixer/shim ###
+
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###
+(Carlos, Ramón, Fernando y Martín) Pokemones.7z
