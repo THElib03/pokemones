@@ -1,69 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pokédex Index{% endblock %}
+{% block title %}Pokédex Index
+{% endblock %}
 
 {% block body %}
-    <h1>Pokédex Index</h1>
+	<div class="container">
+		<h1>Pokédex Index</h1>
 
-    <table class="pokedex-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pokedex in pokedexes %}
-                <tr>
-                    <td>{{ pokedex.id }}</td>
-                    <td>{{ pokedex.name }}</td>
-                    <td>
-                        {% for type in pokedex.type %}
-                            <span class="type-badge" style="background-color: {{ random(['#FF0000', '#00FF00', '#0000FF', '#FFFF00']) }}">
-                                {{ type }}
-                            </span>
-                        {% endfor %}
-                    </td>
-                    <td>
-                        <div class="pokemon-image-container">
-                            <img src="{{ asset('uploads/images/' ~ pokedex.image) }}" 
-                                 alt="{{ pokedex.name }}" 
-                                 class="pokemon-image">
-                        </div>
-                    </td>
-                    <td>
-                        <a href="{{ path('app_pokedex_show', {'id': pokedex.id}) }}" 
-                           class="btn btn-primary" 
-                           style="margin: 3px;">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        {% if app.user %}
-                            <a href="{{ path('app_pokedex_edit', {'id': pokedex.id}) }}" 
-                               class="btn btn-secondary" 
-                               style="margin: 3px;">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5" style="text-align: center;">No Pokémon found in the Pokédex</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+		<table class="pokedex-table">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Image</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for pokedex in pokedexes %}
+					<tr>
+						<td>#{{ '%03d'|format(pokedex.id) }}</td>
+						<td>{{ pokedex.name }}</td>
+						<td>
+							{% for type in pokedex.type %}
+								<span class="type-badge type-{{ type|lower }}">
+									{{ type }}
+								</span>
+							{% endfor %}
+						</td>
+						<td>
+							<div class="pokemon-image-container">
+								<img src="{{ asset('uploads/images/' ~ pokedex.image) }}" alt="{{ pokedex.name }}" class="pokemon-image">
+							</div>
+						</td>
+						<td class="pokedex-actions">
+							<a href="{{ path('app_pokedex_show', {'id': pokedex.id}) }}" class="btn btn-primary">
+								<i class="fas fa-eye"></i>
+							</a>
+							{% if app.user %}
+								<a href="{{ path('app_pokedex_edit', {'id': pokedex.id}) }}" class="btn btn-secondary">
+									<i class="fas fa-edit"></i>
+								</a>
+							{% endif %}
+						</td>
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="5" class="text-center">No Pokémon found in the Pokédex</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 
-    {% if app.user %}
-        <a href="{{ path('app_pokedex_new') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add New Pokémon
-        </a>
-    {% endif %}
+		<div class="mt-4">
+			{% if app.user %}
+				<a href="{{ path('app_pokedex_new') }}" class="btn btn-primary">
+					<i class="fas fa-plus"></i>
+					Add New Pokémon
+				</a>
+			{% endif %}
 
-    <a href="{{ path('app_main') }}" class="btn btn-secondary" style="margin-top: 20px;">
-        <i class="fas fa-home"></i> Back to Home
-    </a>
+			<a href="{{ path('app_main') }}" class="btn btn-secondary">
+				<i class="fas fa-home"></i>
+				Back to Home
+			</a>
+		</div>
+	</div>
 {% endblock %}

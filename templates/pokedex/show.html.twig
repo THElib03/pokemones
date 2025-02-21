@@ -18,9 +18,9 @@
                 </tr>
                 <tr>
                     <th>Type</th>
-                    <td>
+                     <td>
                         {% for type in pokedex.type %}
-                            <span class="type-badge" style="background-color: {{ random(['#FF0000', '#00FF00', '#0000FF', '#FFFF00']) }}">
+                            <span class="type-badge type-{{ type|lower }}">
                                 {{ type }}
                             </span>
                         {% endfor %}
