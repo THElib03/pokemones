@@ -1,56 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Pokemon index
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('css/pokemon.css') }}">
+{% endblock %}
+
+{% block title %}Colección de Pokémon
 {% endblock %}
 
 {% block body %}
-	<h1>Pokemon index</h1>
+	<div class="container">
+		<h1>Mi Colección de Pokémon</h1>
 
-	<table class="table">
-		<thead>
-			<tr>
-				<th>N Pokedex</th>
-				<th>Nombre</th>    <!-- TODO: Añadir imagen del pokemon -->
-				<th>Nivel</th>
-				<th>Poder</th>
-				<th>Estado</th>
-				<th>Acciones</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for pokemon in pokemons %}
+		<table class="pokemon-table">
+			<thead>
 				<tr>
-					<td>{{ pokemon.pokedex.id }}</td>
-					<td>{{ pokemon.pokedex.name }}</td>
-					<td>{{ pokemon.level }}</td>
-					<td>{{ pokemon.power }}</td>
-					<td>
-						{% if pokemon.isAlive %}
-							Activo
-						{% else %}
-						    Incapacitado
-						{% endif %}
-					</td>
-					{% if pokemon.isAlive %}
+					<th>N° Pokédex</th>
+					<th>Imagen</th>
+					<th>Nombre</th>
+					<th>Nivel</th>
+					<th>Poder</th>
+					<th>Estado</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for pokemon in pokemons %}
+					<tr>
+						<td>#{{ '%03d'|format(pokemon.pokedex.id) }}</td>
 						<td>
-						{# TODO: Implementar las acciones #}
-							<a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">Entrenar</a>
-							<a href="{{ path('app_battle_new_wild', {'id': pokemon.id}) }}">Lucha contra pokemones salvajes</a>
-							<a href="{{ path('app_battle_new_simple', {'id': pokemon.id}) }}">Lucha contra otros entrenadores</a>
-							{# <a href="{{ path('app_battle_new_team'}}">Formar equipo para luchar</a> #}
+							<img src="{{ asset('uploads/images/' ~ pokemon.pokedex.image) }}" alt="{{ pokemon.pokedex.name }}" style="width: 50px; height: 50px; object-fit: contain;">
 						</td>
-					{% else %}
-						<td><span>El pokemon esta muerto</span></td>
-					{% endif %}
-				</tr>
-			{% else %}
-				<tr>
-					<td colspan="5">no records found</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	<br>
-	<a href="{{ path('app_main') }}" class="btn btn-secondary" style="margin-top: 20px;">Volver a Inicio</a>
+						<td>{{ pokemon.pokedex.name }}</td>
+						<td>{{ pokemon.level }}</td>
+						<td>{{ pokemon.power }}</td>
+						<td>
+							{% if pokemon.isAlive %}
+								<span class="pokemon-status-active">Activo</span>
+							{% else %}
+								<span class="pokemon-status-inactive">Incapacitado</span>
+							{% endif %}
+						</td>
+						{% if pokemon.isAlive %}
+							<td class="action-links">
+								<a href="{{ path('app_pokemon_train', {'id': pokemon.id}) }}">🏋️ Entrenar</a>
+								<a href="{{ path('app_battle_new_wild', {'id': pokemon.id}) }}">🌿 Pokémon Salvajes</a>
+								<a href="{{ path('app_battle_new_simple', {'id': pokemon.id}) }}">⚔️ Batalla Entrenador</a>
+							</td>
+						{% else %}
+							<td>
+								<span class="pokemon-status-inactive">💀 Pokémon incapacitado</span>
+							</td>
+						{% endif %}
+					</tr>
+				{% else %}
+					<tr>
+						<td colspan="6" style="text-align: center;">No hay Pokémon en tu colección</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
 
+		<div style="text-align: center; margin-top: 2rem;">
+			<a href="{{ path('app_main') }}" class="btn btn-secondary">← Volver a Inicio</a>
+			<a href="{{ path('app_pokemon_new') }}" class="btn btn-primary">+ Añadir Pokémon</a>
+		</div>
+	</div>
 {% endblock %}
